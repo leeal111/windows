@@ -1,11 +1,11 @@
 param (
-    [ValidateSet("GenshinImpact", "StarRail", "Arknights")]
+    [ValidateSet("GenshinImpact", "StarRail", "Arknights", "ZenlessZoneZero", "BlueArchive")]
     [string]$GameName
 )
 
 # ´´½¨¹þÏ£±í
 $eventMap = @{
-    GenshinImpact = @{
+    GenshinImpact   = @{
         path   = "D:\PortableDir\BetterGI_v0.42.0\BetterGI.exe"
         events = @(
             @{
@@ -41,7 +41,7 @@ $eventMap = @{
             }
         )
     }
-    StarRail      = @{
+    StarRail        = @{
         path   = "D:\PortableDir\March7thAssistant_v2024.12.18_full\March7th Launcher.exe"
         events = @(
             @{
@@ -51,9 +51,40 @@ $eventMap = @{
             }
         )
     }
-    Arknights     = @{
+    Arknights       = @{
         path   = "D:\PortableDir\MAA-v5.11.1-win-x64\MAA.exe"
         events = @(
+        )
+    }
+    ZenlessZoneZero = @{
+        path   = "D:\PortableDir\ZenlessZoneZero-OneDragon\OneDragon Launcher.exe"
+        events = @(
+            @{
+                X         = 133
+                Y         = 254
+                delayTime = 10000
+            }
+
+            @{
+                X         = 710
+                Y         = 450
+                delayTime = 1000
+            }        
+        )
+    }
+    BlueArchive     = @{
+        path   = "D:\PortableDir\BlueArchiveAutoScript_v1_2_0_x86_64\BlueArchiveAutoScript_v1_2_0_x86_64.exe"
+        events = @(
+            @{
+                X         = 851
+                Y         = 846
+                delayTime = 2 * 60000
+            }
+            @{
+                X         = 1186
+                Y         = 575
+                delayTime = 1000
+            }
         )
     }
 }
@@ -217,7 +248,6 @@ public struct POINT
 Add-Type -TypeDefinition $mouseScript
 
 try {
-
     $map = $eventMap[$GameName]
     Start-Process -FilePath $map["path"] -Verb RunAs
     foreach ($event in $map["events"]) {

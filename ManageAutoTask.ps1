@@ -6,24 +6,29 @@ param (
 # 定义任务数组，每个任务包含名称、触发器时间和脚本路径
 $tasks = @(
     @{ 
-        Name   = "GenshinImpact"
-        Time   = "12:30"
+        Name  = "GenshinImpact"
+        Time  = "07:30"
         Param = "-File C:\Users\fumen\OneDrive\script\BootGameAutoTool.ps1 -GameName GenshinImpact" 
     }
     @{ 
-        Name   = "StarRail"
-        Time   = "18:05"
+        Name  = "StarRail"
+        Time  = "12:35"
         Param = "-File C:\Users\fumen\OneDrive\script\BootGameAutoTool.ps1 -GameName StarRail" 
     }
     @{ 
-        Name   = "Arknights"
-        Time   = "07:30"
+        Name  = "Arknights"
+        Time  = "12:30"
         Param = "-File C:\Users\fumen\OneDrive\script\BootGameAutoTool.ps1 -GameName Arknights" 
     }
     @{ 
-        Name   = "Arknights2"
-        Time   = "18:00"
-        Param = "-File C:\Users\fumen\OneDrive\script\BootGameAutoTool.ps1 -GameName Arknights" 
+        Name  = "ZenlessZoneZero"
+        Time  = "18:10"
+        Param = "-File C:\Users\fumen\OneDrive\script\BootGameAutoTool.ps1 -GameName ZenlessZoneZero" 
+    }
+    @{ 
+        Name  = "BlueArchive"
+        Time  = "18:00"
+        Param = "-File C:\Users\fumen\OneDrive\script\BootGameAutoTool.ps1 -GameName BlueArchive" 
     }
 )
 
