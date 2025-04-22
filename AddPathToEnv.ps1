@@ -18,14 +18,14 @@ function Test-ValidPath {
     }
 }
 
-if (-not (Test-ValidPath -Path $Path)) {
-    Write-Output "提供的路径 '$Path' 不是一个合法的路径。"
-    exit
-}
-
 # 如果没有提供路径参数，则使用脚本所在的路径
 if (-not $Path) {
     $Path = (Get-Location).Path
+}
+
+if (-not (Test-ValidPath -Path $Path)) {
+    Write-Output "提供的路径 '$Path' 不是一个合法的路径。"
+    exit
 }
 
 # 获取环境变量中的路径

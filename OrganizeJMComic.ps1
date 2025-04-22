@@ -1,14 +1,16 @@
 # 描述: 用于将下载下来的漫画文件夹整理为压缩包并删除原文件夹
 
 param (
+    [Parameter(Mandatory = $true, HelpMessage = "必须指定作者名称")]
     [string]$AuthorName    # 作者名称，用于保存路径的子路径
 )
 
 # 参数 
 $7zPath = "C:\Program Files\7-Zip\7z.exe"  # 7-Zip 可执行文件路径
-$srcDir = "D:\PortableDir\0-other\0-18x\jmcomic_v1.2.6_windows_x64\data\commies" # 源文件夹路径
-$desDir = Join-Path -Path "D:\PortableDir\0-other\0-18x\1-comic" -ChildPath $AuthorName # 目标文件夹路径
+$srcDir = "D:\PortableDir\1-fun\0-other\jmcomic\data\commies" # 源文件夹路径
+$desDir = "D:\PortableDir\1-fun\0-other\1-comic" # 目标文件夹路径
 
+$desDir = Join-Path -Path $desDir -ChildPath $AuthorName
 Write-Host "目标路径为：$desDir`n"
 
 # 检查 7-Zip 是否存在
@@ -22,20 +24,11 @@ if (-not (Test-Path $srcDir)) {
     exit 1
 }
 
-# 初始化一个空数组，用于存储所有子文件夹路径
-$allSubFolders = @()
-
 # 获取目标目录下的所有文件夹
 $folders = Get-ChildItem -Path $srcDir -Directory
 
-# 遍历每个文件夹，获取其下一级的所有子文件夹
-foreach ($folder in $folders) {
-    $subFolders = Get-ChildItem -Path $folder.FullName -Directory
-    $allSubFolders += $subFolders
-}
-
 $count = 0
-foreach ($folder in $allSubFolders) {
+foreach ($folder in $folders) {
     $contentPath = Join-Path -Path $folder.FullName -ChildPath "original" # 漫画输入路径
     $zipFileName = Join-Path -Path $desDir -ChildPath "$($folder.Name).zip" # 压缩包输出路径
 
@@ -77,7 +70,7 @@ foreach ($folder in $allSubFolders) {
 
 Write-Host "`n共计 $count 项压缩任务完成"
 
-if ($count -eq $allSubFolders.Count) {
+if ($count -eq $folders.Count) {
     foreach ($folder in $folders) {
         $folderPath = $folder.FullName
         Remove-Item -Path $folderPath -Recurse -Force -ErrorAction Stop

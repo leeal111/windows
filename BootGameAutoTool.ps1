@@ -3,90 +3,22 @@ param (
     [string]$GameName
 )
 
-# 创建哈希表
-$eventMap = @{
-    GenshinImpact   = @{
-        path   = "D:\PortableDir\BetterGI_v0.42.0\BetterGI.exe"
-        events = @(
-            @{
-                X         = 912
-                Y         = 622
-                delayTime = 10000
-            },
-            @{
-                X         = 932
-                Y         = 660
-                delayTime = 1000
-            }
-            ,
-            @{
-                X         = 1067
-                Y         = 924
-                delayTime = 1000
-            },
-            @{
-                X         = 1212
-                Y         = 513
-                delayTime = 1000
-            },
-            @{
-                X         = 1233
-                Y         = 839
-                delayTime = 1000
-            },
-            @{
-                X         = 365
-                Y         = 752
-                delayTime = 1000
-            }
-        )
-    }
-    StarRail        = @{
-        path   = "D:\PortableDir\March7thAssistant_v2024.12.18_full\March7th Launcher.exe"
-        events = @(
-            @{
-                X         = 961
-                Y         = 833
-                delayTime = 10000
-            }
-        )
-    }
-    Arknights       = @{
-        path   = "D:\PortableDir\MAA-v5.11.1-win-x64\MAA.exe"
-        events = @(
-        )
-    }
-    ZenlessZoneZero = @{
-        path   = "D:\PortableDir\ZenlessZoneZero-OneDragon\OneDragon Launcher.exe"
-        events = @(
-            @{
-                X         = 133
-                Y         = 254
-                delayTime = 10000
-            }
+$dataPath = "C:\Users\fumen\OneDrive\script\ClickData" # 数据存储路径
+$programMap = @{
+    GenshinImpact   = "D:\PortableDir\BetterGI_v0.42.0\BetterGI.exe"
+    StarRail        = "D:\PortableDir\March7thAssistant_v2024.12.18_full\March7th Launcher.exe"
+    Arknights       = "D:\PortableDir\MAA-v5.11.1-win-x64\MAA.exe"
+    ZenlessZoneZero = "D:\PortableDir\ZenlessZoneZero-OneDragon\OneDragon Launcher.exe"
+    BlueArchive     = "D:\PortableDir\BlueArchiveAutoScript_v1_2_0_x86_64\BlueArchiveAutoScript_v1_2_0_x86_64.exe"
+}
 
-            @{
-                X         = 710
-                Y         = 450
-                delayTime = 1000
-            }        
-        )
-    }
-    BlueArchive     = @{
-        path   = "D:\PortableDir\BlueArchiveAutoScript_v1_2_0_x86_64\BlueArchiveAutoScript_v1_2_0_x86_64.exe"
-        events = @(
-            @{
-                X         = 851
-                Y         = 846
-                delayTime = 2 * 60000
-            }
-            @{
-                X         = 1186
-                Y         = 575
-                delayTime = 1000
-            }
-        )
-    }
+$eventMap = @{}
+$jsonFiles = Get-ChildItem -Path $dataPath
+foreach ($file in $jsonFiles) {
+    $key = [System.IO.Path]::GetFileNameWithoutExtension($file.FullName)
+    $jsonContent = Get-Content -Path $file.FullName -Raw
+    $coordinates = $jsonContent | ConvertFrom-Json
+    $eventMap[$key] = $coordinates
 }
 
 $mouseScript = @"
@@ -102,7 +34,7 @@ public class Mouse
     {
         // 移动鼠标到目标位置
         SendMouseEvent(MOUSEEVENTF_MOVE | MOUSEEVENTF_ABSOLUTE, x, y);
-
+        
         // 模拟鼠标左键按下和释放
         SendMouseEvent(MOUSEEVENTF_LEFTDOWN, 0, 0);
         SendMouseEvent(MOUSEEVENTF_LEFTUP, 0, 0);
@@ -154,7 +86,8 @@ public class Mouse
 
         try
         {
-            return GetDeviceCaps(hdc, HORZRES);
+            int width = GetDeviceCaps(hdc, DESKTOPHORZRES ); // 获取屏幕宽度
+            return width;
         }
         finally
         {
@@ -170,7 +103,8 @@ public class Mouse
 
         try
         {
-            return GetDeviceCaps(hdc, VERTRES);
+            int height = GetDeviceCaps(hdc, DESKTOPVERTRES ); // 获取屏幕高度
+            return height;
         }
         finally
         {
@@ -209,6 +143,10 @@ public class Mouse
     // 设备能力索引常量
     private const int HORZRES = 8;   // 水平分辨率
     private const int VERTRES = 10;  // 垂直分辨率
+    private const int LOGPIXELSX = 88;
+    private const int LOGPIXELSY = 90;
+    private const int DESKTOPHORZRES = 118; // 真实桌面分辨率的水平大小
+    private const int DESKTOPVERTRES = 117; // 真实桌面分辨率的垂直大小
 
     // 导入必要的 Windows API 函数
     [DllImport("user32.dll")]
@@ -248,11 +186,32 @@ public struct POINT
 Add-Type -TypeDefinition $mouseScript
 
 try {
-    $map = $eventMap[$GameName]
-    Start-Process -FilePath $map["path"] -Verb RunAs
-    foreach ($event in $map["events"]) {
-        Start-Sleep -Milliseconds $event.delayTime
-        [Mouse]::ClickAt($event.X, $event.Y)
+    Start-Process -FilePath $programMap[$GameName] -Verb RunAs
+    if ($GameName -in @("Arknights", "BlueArchive") ) {
+        $adb = "D:\Program Files\Netease\MuMu Player 12\shell\adb.exe"
+        $ip = (ipconfig | Select-String "IPv4 地址" | ForEach-Object { ($_ -split ': ')[-1].Trim() })
+        while ($true) {
+            $output = . $adb connect 127.0.0.1:16384
+            Write-Host $output
+            if ($output.StartsWith("already connected") -or $output.StartsWith("connected")) {
+                break
+            }
+            Start-Sleep -Milliseconds 1000
+        }
+        while ($true) {
+            $output = . ${adb} -s 127.0.0.1:16384 shell settings put global http_proxy ${ip}:7890
+            Write-Host $output
+            if ([string]::IsNullOrEmpty($s)) {
+                break
+            }
+            Start-Sleep -Milliseconds 1000
+        }
+    }
+    if ($GameName -in $eventMap.Keys) {
+        foreach ($event in $eventMap[$GameName]) {
+            Start-Sleep -Seconds $event.delayTime
+            [Mouse]::ClickAt($event.X, $event.Y)
+        }
     }
 }
 catch [Exception] {
