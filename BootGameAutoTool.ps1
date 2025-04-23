@@ -1,7 +1,10 @@
 param (
-    [ValidateSet("GenshinImpact", "StarRail", "Arknights", "ZenlessZoneZero", "BlueArchive")]
+    [Parameter(Mandatory = $true, HelpMessage = "必须指定应用名称")]
     [string]$GameName
 )
+
+# 提示信息
+Write-Host "请输入游戏名称（建议值：GenshinImpact, StarRail, Arknights, ZenlessZoneZero, BlueArchive）" -ForegroundColor Cyan
 
 $dataPath = "C:\Users\fumen\OneDrive\script\ClickData" # 数据存储路径
 $programMap = @{
@@ -186,7 +189,9 @@ public struct POINT
 Add-Type -TypeDefinition $mouseScript
 
 try {
-    Start-Process -FilePath $programMap[$GameName] -Verb RunAs
+    if ($GameName -in $programMap.Keys) {
+        Start-Process -FilePath $programMap[$GameName] -Verb RunAs
+    } 
     if ($GameName -in @("Arknights", "BlueArchive") ) {
         $adb = "D:\Program Files\Netease\MuMu Player 12\shell\adb.exe"
         $ip = (ipconfig | Select-String "IPv4 地址" | ForEach-Object { ($_ -split ': ')[-1].Trim() })
