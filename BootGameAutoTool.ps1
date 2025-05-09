@@ -1,10 +1,19 @@
 param (
-    [Parameter(Mandatory = $true, HelpMessage = "必须指定应用名称")]
-    [string]$GameName
+    [Parameter(Mandatory = $true, HelpMessage = "必须指定应用名称", ParameterSetName = "Default")]
+    [string]$GameName,
+
+    [Parameter(Mandatory = $false, ParameterSetName = "Help")]
+    [Alias("h", "help")]
+    [switch]$HelpSwitch
 )
 
-# 提示信息
-Write-Host "请输入游戏名称（建议值：GenshinImpact, StarRail, Arknights, ZenlessZoneZero, BlueArchive）" -ForegroundColor Cyan
+if ($HelpSwitch) {
+    Write-Host "支持的游戏名称："
+    foreach ($key in @( "GenshinImpact", "StarRail", "Arknights", "ZenlessZoneZero", "BlueArchive")) {
+        Write-Host "- $key"
+    }
+    exit
+}
 
 $dataPath = "C:\Users\fumen\OneDrive\script\ClickData" # 数据存储路径
 $programMap = @{
