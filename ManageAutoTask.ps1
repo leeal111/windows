@@ -7,29 +7,29 @@ param (
 $tasks = @(
     @{ 
         Name  = "GenshinImpact"
-        Time  = "07:30"
+        Time  = "11:50"
         Param = "-File C:\Users\fumen\OneDrive\script\BootGameAutoTool.ps1 -GameName GenshinImpact" 
     }
     @{ 
         Name  = "StarRail"
-        Time  = "12:35"
+        Time  = "17:50"
         Param = "-File C:\Users\fumen\OneDrive\script\BootGameAutoTool.ps1 -GameName StarRail" 
     }
-    @{ 
-        Name  = "Arknights"
-        Time  = "12:30"
-        Param = "-File C:\Users\fumen\OneDrive\script\BootGameAutoTool.ps1 -GameName Arknights" 
-    }
-    @{ 
-        Name  = "ZenlessZoneZero"
-        Time  = "18:10"
-        Param = "-File C:\Users\fumen\OneDrive\script\BootGameAutoTool.ps1 -GameName ZenlessZoneZero" 
-    }
-    @{ 
-        Name  = "BlueArchive"
-        Time  = "18:00"
-        Param = "-File C:\Users\fumen\OneDrive\script\BootGameAutoTool.ps1 -GameName BlueArchive" 
-    }
+    # @{ 
+    #     Name  = "Arknights"
+    #     Time  = "12:30"
+    #     Param = "-File C:\Users\fumen\OneDrive\script\BootGameAutoTool.ps1 -GameName Arknights" 
+    # }
+    # @{ 
+    #     Name  = "ZenlessZoneZero"
+    #     Time  = "23:00"
+    #     Param = "-File C:\Users\fumen\OneDrive\script\BootGameAutoTool.ps1 -GameName ZenlessZoneZero" 
+    # }
+    # @{ 
+    #     Name  = "BlueArchive"
+    #     Time  = "18:00"
+    #     Param = "-File C:\Users\fumen\OneDrive\script\BootGameAutoTool.ps1 -GameName BlueArchive" 
+    # }
 )
 
 function ConvertTo12HourFormat {
