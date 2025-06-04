@@ -26,6 +26,18 @@
     WinActivate("Obsidian")
 }
 
+/**
+ * Ö÷Ò³Æô¶¯
+ */
+!2:: {
+    If !WinExist("Obsidian") {
+        SendInput("!q")
+    }
+    Sleep 50
+    WinActivate("Obsidian")
+    SendInput("!c")
+}
+
 #HotIf
 
 #c:: {
