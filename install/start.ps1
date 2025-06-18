@@ -31,7 +31,13 @@ if ($OptionType -eq "Install") {
     }
 }
 elseif ($OptionType -eq "Uninstall") {
-    Unregister-ScheduledTask -TaskName $taskName -Confirm:$false    
+    try {
+        Unregister-ScheduledTask -TaskName $taskName -Confirm:$false 
+    }
+    catch {
+        Write-Error "卸载计划任务失败：$_"
+        exit 1
+    }   
     Write-Host "已成功卸载计划"
 }
 else {
