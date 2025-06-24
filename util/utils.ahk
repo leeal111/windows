@@ -1,6 +1,7 @@
 ﻿ClickWindow(G_game, G_game_clickEvent) {
     Run G_game
     WinWait(G_game_clickEvent[1].title)
+    Sleep(1000) ; 安全冗余
     for event in G_game_clickEvent {
         if WinExist(event.title) {
             WinActivate(event.title)
